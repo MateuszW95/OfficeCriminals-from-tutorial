@@ -1,6 +1,8 @@
 package com.bignerdranch.android.criminalintent;
 
 import android.app.Fragment;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,6 +26,7 @@ public class CrimeListFragment extends android.support.v4.app.Fragment{
 
     private RecyclerView mCrimeRecycleView;
     private  CrimeAdapter mAdapter;
+    private int pos=0;
 
     @Nullable
     @Override
@@ -34,6 +37,12 @@ public class CrimeListFragment extends android.support.v4.app.Fragment{
         mCrimeRecycleView.setLayoutManager(new LinearLayoutManager(getActivity()));
         updateUI();
         return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateUI();
     }
 
     private class CrimeHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -64,9 +73,13 @@ public class CrimeListFragment extends android.support.v4.app.Fragment{
 
         @Override
         public void onClick(View v) {
-            Toast.makeText(getActivity(),mCrime.getTitle()+"klik",Toast.LENGTH_LONG).show();
+            Context c=getActivity();
+            Intent intent=CrimeActivity.newIntent(getActivity(),mCrime.getId());
+            pos=getAdapterPosition();
+            startActivity(intent);
         }
     }
+
 
     private class CrimeAdapter extends RecyclerView.Adapter<CrimeHolder> {
         private List<Crime> mCrimes;
@@ -81,11 +94,15 @@ public class CrimeListFragment extends android.support.v4.app.Fragment{
             return new CrimeHolder(layoutInflater, parent);
         }
 
+
+
         @Override
         public void onBindViewHolder(CrimeHolder holder, int position) {
             Crime crime=mCrimes.get(position);
             holder.Bind(crime);
+
         }
+
 
         @Override
         public int getItemCount() {
@@ -96,9 +113,13 @@ public class CrimeListFragment extends android.support.v4.app.Fragment{
         private void updateUI(){
             CrimeLab crimeLab=CrimeLab.get(getActivity());
             List<Crime> crimes=crimeLab.getCrimes();
-
-            mAdapter=new CrimeAdapter(crimes);
-            mCrimeRecycleView.setAdapter(mAdapter);
+            if(mAdapter==null) {
+                mAdapter = new CrimeAdapter(crimes);
+                mCrimeRecycleView.setAdapter(mAdapter);
+            }
+            else{
+                mAdapter.notifyItemChanged(pos);
+            }
         }
 
 }

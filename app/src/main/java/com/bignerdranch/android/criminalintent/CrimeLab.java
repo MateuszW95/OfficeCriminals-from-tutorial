@@ -3,6 +3,7 @@ package com.bignerdranch.android.criminalintent;
 import android.content.Context;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,7 +14,8 @@ import java.util.UUID;
 
 public class CrimeLab {
     private static CrimeLab sCrimeLab;
-    private List<Crime> mCrimes;
+    //private List<Crime> mCrimes;
+    private HashMap<UUID,Crime> mCrimes;
     public static CrimeLab get(Context context){
         if(sCrimeLab==null)
         {
@@ -23,25 +25,23 @@ public class CrimeLab {
     }
 
     private CrimeLab(){
-        mCrimes=new ArrayList<>();
+        mCrimes=new HashMap<>();
         for(int i=0;i<100;++i) {
             Crime tmp=new Crime();
             tmp.setTitle("Sprawa #"+i);
             tmp.setSolved(i%2==0);
-            mCrimes.add(tmp);
+            mCrimes.put(tmp.getId(),tmp);
 
         }
     }
 
     public List<Crime> getCrimes(){
-        return mCrimes;
+        return new ArrayList<>(mCrimes.values());
     }
 
     public Crime getCrime(UUID id)
     {
-        for(Crime c: mCrimes){
-            if(c.getId().equals(id)) return c;
-        }
-        return null;
+        return mCrimes.get(id);
+
     }
 }
