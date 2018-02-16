@@ -73,8 +73,8 @@ public class CrimeListFragment extends android.support.v4.app.Fragment{
 
         @Override
         public void onClick(View v) {
-            Context c=getActivity();
-            Intent intent=CrimeActivity.newIntent(getActivity(),mCrime.getId());
+
+            Intent intent=CrimePagerActivity.newIntent(getActivity(),mCrime.getId());
             pos=getAdapterPosition();
             startActivity(intent);
         }
