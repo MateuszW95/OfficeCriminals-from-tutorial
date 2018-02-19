@@ -7,4 +7,5 @@
     <string name="first_item">Pierwszy</string>
     <string name="last_item">Ostatni</string>
     <string name="date_piker_title">Date of crime:</string>
+    <string name="time_piker_title">Crime time:</string>
 </resources>
