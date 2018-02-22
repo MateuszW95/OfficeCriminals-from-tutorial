@@ -14,8 +14,8 @@ import java.util.UUID;
 
 public class CrimeLab {
     private static CrimeLab sCrimeLab;
-    //private List<Crime> mCrimes;
-    private HashMap<UUID,Crime> mCrimes;
+    private List<Crime> mCrimes;
+   // private HashMap<UUID,Crime> mCrimes;
     public static CrimeLab get(Context context){
         if(sCrimeLab==null)
         {
@@ -25,23 +25,35 @@ public class CrimeLab {
     }
 
     private CrimeLab(){
-        mCrimes=new HashMap<>();
-        for(int i=0;i<100;++i) {
+        mCrimes=new ArrayList<>();
+        /*for(int i=0;i<100;++i) {
             Crime tmp=new Crime();
             tmp.setTitle("Sprawa #"+i);
             tmp.setSolved(i%2==0);
-            mCrimes.put(tmp.getId(),tmp);
+            mCrimes.add(tmp);
 
-        }
+        }*/
+    }
+
+    public void add(Crime c){
+        mCrimes.add(c);
     }
 
     public List<Crime> getCrimes(){
-        return new ArrayList<>(mCrimes.values());
+        return mCrimes;
     }
 
     public Crime getCrime(UUID id)
     {
-        return mCrimes.get(id);
+         HashMap<UUID,Crime> tmpCrimes=new HashMap<>();
+            for(Crime c: mCrimes){ tmpCrimes.put(c.getId(),c);}
 
+            return tmpCrimes.get(id);
+
+
+    }
+
+    public void delete(Crime crime){
+        mCrimes.remove(crime);
     }
 }

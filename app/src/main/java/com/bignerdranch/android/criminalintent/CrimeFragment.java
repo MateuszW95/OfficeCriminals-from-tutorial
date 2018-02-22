@@ -35,7 +35,18 @@ public class CrimeFragment extends Fragment {
     private Button mDateButton;
     private CheckBox mSolvedCheckBox;
     private Button mTimeButton;
+    private Button mDeleteButton;
+    private boolean ifdeleted=false;
+    private static String EXTRA_IFDELETED="99##@!@!@";
+    private static String EXTRA_IDCRIME="33@#@!";
 
+
+    public  static UUID getDataFromResult(Intent intent){
+        if(intent.getBooleanExtra(EXTRA_IFDELETED,false)){
+            return (UUID)intent.getSerializableExtra(EXTRA_IDCRIME);
+        }
+        else return null;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,9 +71,26 @@ public class CrimeFragment extends Fragment {
         mTitleField=(EditText)v.findViewById(R.id.crime_title);
         mDateButton=(Button)v.findViewById(R.id.crime_date);
         mTimeButton=v.findViewById(R.id.crime_time);
+        mDeleteButton=v.findViewById(R.id.bt_deleteCrime);
         updateDate();
         mTimeButton.setText(mCrime.getDate().toString());
         updateTime();
+
+        mDeleteButton.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                ifdeleted=true;
+
+                    Intent data=new Intent();
+                    data.putExtra(EXTRA_IFDELETED,ifdeleted);
+                    data.putExtra(EXTRA_IDCRIME,mCrime.getId());
+
+                    getActivity().setResult(Activity.RESULT_OK,data);
+
+                getActivity().finish();
+            }
+        });
         mTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

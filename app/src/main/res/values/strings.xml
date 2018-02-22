@@ -8,4 +8,9 @@
     <string name="last_item">Ostatni</string>
     <string name="date_piker_title">Date of crime:</string>
     <string name="time_piker_title">Crime time:</string>
+    <string name="new_crime">Nowe przestepstwo</string>
+    <string name="show_subtitle">Pokaż podtytuł</string>
+    <string name="hide_subtitle">Ukryj podtytuł</string>
+    <string name="sybtitle_format">%1$d przestępstw</string>
+    <string name="remove_crime">Usuń</string>
 </resources>
