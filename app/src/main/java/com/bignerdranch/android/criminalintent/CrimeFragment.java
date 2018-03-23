@@ -2,6 +2,7 @@ package com.bignerdranch.android.criminalintent;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -157,6 +158,12 @@ public class CrimeFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        CrimeLab.get(getActivity()).updateCrime(mCrime);
+    }
+
     private void updateDate() {
         SimpleDateFormat spf=new SimpleDateFormat("d.M.YYYY");
         mDateButton.setText(spf.format(mCrime.getDate()));
@@ -166,4 +173,6 @@ public class CrimeFragment extends Fragment {
         SimpleDateFormat sdf=new SimpleDateFormat("k:m");
         mTimeButton.setText(sdf.format(mCrime.getDate()));
     }
+
+
 }

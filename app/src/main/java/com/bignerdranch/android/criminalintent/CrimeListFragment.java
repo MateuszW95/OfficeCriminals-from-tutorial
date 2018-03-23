@@ -15,9 +15,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -30,6 +33,8 @@ import java.util.List;
 public class CrimeListFragment extends android.support.v4.app.Fragment{
 
     private RecyclerView mCrimeRecycleView;
+    private Button mAddButton;
+    private TextView mEptyTextViewl;
     private  CrimeAdapter mAdapter;
     private int pos=0;
     private boolean mSubtitleVisible;
@@ -46,8 +51,20 @@ public class CrimeListFragment extends android.support.v4.app.Fragment{
             updateSubtitle();
         }
         mCrimeRecycleView=(RecyclerView)v.findViewById(R.id.crime_recycle_view);
+        mAddButton=v.findViewById(R.id.bt_addNew);
+        mAddButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Crime crime = new Crime();
+                CrimeLab.get(getActivity()).add(crime);
+                Intent intent = CrimePagerActivity.newIntent(getActivity(), crime.getId());
+                startActivity(intent);
+            }
+        });
+        mEptyTextViewl=v.findViewById(R.id.tv_empty);
         mCrimeRecycleView.setLayoutManager(new LinearLayoutManager(getActivity()));
         updateUI();
+        updateView();
         return v;
     }
 
@@ -75,6 +92,7 @@ public class CrimeListFragment extends android.support.v4.app.Fragment{
     public void onResume() {
         super.onResume();
         updateUI();
+        updateView();
 
     }
 
@@ -161,6 +179,8 @@ public class CrimeListFragment extends android.support.v4.app.Fragment{
         public int getItemCount() {
             return mCrimes.size();
         }
+
+        public void setCrimes(List<Crime> crimes){mCrimes=crimes;}
     }
 
         private void updateUI(){
@@ -171,6 +191,7 @@ public class CrimeListFragment extends android.support.v4.app.Fragment{
                 mCrimeRecycleView.setAdapter(mAdapter);
             }
             else{
+                mAdapter.setCrimes(crimes);
                 mAdapter.notifyDataSetChanged();
 
             }
@@ -181,7 +202,7 @@ public class CrimeListFragment extends android.support.v4.app.Fragment{
             CrimeLab crimeLab=CrimeLab.get(getActivity());
             int crimeCount=crimeLab.getCrimes().size();
 
-            String subtitle=getString(R.string.sybtitle_format,crimeCount);
+            String subtitle=getResources().getQuantityString(R.plurals.criminalCount,crimeCount,crimeCount);
              if(!mSubtitleVisible){
                  subtitle=null;
              }
@@ -204,6 +225,21 @@ public class CrimeListFragment extends android.support.v4.app.Fragment{
             Crime tmp=CrimeLab.get(getActivity()).getCrime(CrimeFragment.getDataFromResult(data));
             CrimeLab.get(getActivity()).delete(tmp);
             mAdapter.notifyItemRemoved(pos);
+        }
+    }
+
+    private void updateView(){
+        if(CrimeLab.get(getActivity()).getCrimes().size()==0)
+        {
+            mAddButton.setVisibility(View.VISIBLE);
+            mEptyTextViewl.setVisibility(View.VISIBLE);
+            mCrimeRecycleView.setVisibility(View.GONE);
+        }
+        else
+        {
+            mAddButton.setVisibility(View.GONE);
+            mEptyTextViewl.setVisibility(View.GONE);
+            mCrimeRecycleView.setVisibility(View.VISIBLE);
         }
     }
 }

@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">CriminalIntent</string>
     <string name="crime_title_hint">Wprowadź tytuł sprawy:</string>
     <string name="crime_title_label">Tytuł</string>
@@ -13,4 +13,12 @@
     <string name="hide_subtitle">Ukryj podtytuł</string>
     <string name="sybtitle_format">%1$d przestępstw</string>
     <string name="remove_crime">Usuń</string>
+    <string name="empty_array">Lista przestępstw jest pusta</string>
+    <string name="add_criminal">Dodaj przestępstwo</string>
+    <plurals name="criminalCount" >
+        <item quantity="one">%1$d przestępswo</item>
+        <item quantity="zero">%1$d przestępstw</item>
+        <item quantity="other">%1$d przestępstwa</item>
+
+    </plurals>
 </resources>
