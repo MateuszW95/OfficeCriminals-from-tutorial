@@ -25,8 +25,11 @@ public class CrimeBaseHelper extends SQLiteOpenHelper {
                 CrimeDbSchema.CrimeTable.Cols.UUID+","+
                 CrimeDbSchema.CrimeTable.Cols.TITLE+","+
                 CrimeDbSchema.CrimeTable.Cols.DATE+","+
-                CrimeDbSchema.CrimeTable.Cols.SOLVED+")"
+                CrimeDbSchema.CrimeTable.Cols.SOLVED+","+
+                CrimeDbSchema.CrimeTable.Cols.SUSPECT+","+
+                CrimeDbSchema.CrimeTable.Cols.SUSPECT_NUMBER+")"
                 );
+        db.execSQL("create index index_id on "+CrimeDbSchema.CrimeTable.NAME+" ("+CrimeDbSchema.CrimeTable.Cols.UUID+")");
 
     }
 

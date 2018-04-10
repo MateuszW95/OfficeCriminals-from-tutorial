@@ -80,7 +80,7 @@ public class CrimeLab {
     }
 
     public void delete(Crime crime){
-
+        mDatabase.delete(CrimeDbSchema.CrimeTable.NAME, CrimeDbSchema.CrimeTable.Cols.UUID+" = ?",new String[]{crime.getId().toString()});
     }
 
     private static ContentValues getContentValues(Crime crime){
@@ -89,6 +89,8 @@ public class CrimeLab {
         values.put(CrimeDbSchema.CrimeTable.Cols.TITLE,crime.getTitle().toString());
         values.put(CrimeDbSchema.CrimeTable.Cols.DATE,crime.getDate().toString());
         values.put(CrimeDbSchema.CrimeTable.Cols.SOLVED,crime.isSolved()?1:0);
+        values.put(CrimeDbSchema.CrimeTable.Cols.SUSPECT,crime.getSuspect());
+        values.put(CrimeDbSchema.CrimeTable.Cols.SUSPECT_NUMBER,crime.getSuspectNumber());
         return values;
     }
 

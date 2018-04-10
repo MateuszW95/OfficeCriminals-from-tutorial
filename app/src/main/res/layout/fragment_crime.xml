@@ -43,5 +43,24 @@
         android:text="@string/remove_crime"
         android:padding="40dp"
         />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/crime_suspect"
+        android:text="@string/crime_suspect_text"
+        android:background="#579fa1"
+        android:textColor="#fff"
+        />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/crime_report"
+        android:text="@string/crime_report_text"
+        />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/bt_call_suspect"
+        android:text="@string/crime_call"/>
 
 </LinearLayout>

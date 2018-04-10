@@ -13,11 +13,31 @@ public class Crime {
     private Date mDate;
     private boolean mSolved;
 
+    public String getSuspectNumber() {
+        return mSuspectNumber;
+    }
+
+    public void setSuspectNumber(String suspectNumber) {
+        mSuspectNumber = suspectNumber;
+    }
+
+    private String mSuspectNumber;
+
+    public String getSuspect() {
+        return mSuspect;
+    }
+
+    public void setSuspect(String suspect) {
+        mSuspect = suspect;
+    }
+
+    private String mSuspect;
+
     public Crime()
     {
         mId=UUID.randomUUID();
         mTitle="";
-        mSolved=false;                          
+        mSolved=false;
         mDate=new Date();
     }
 
