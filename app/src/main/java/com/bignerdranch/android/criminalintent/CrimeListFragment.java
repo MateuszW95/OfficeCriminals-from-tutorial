@@ -1,7 +1,6 @@
 package com.bignerdranch.android.criminalintent;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,9 +18,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -40,6 +37,25 @@ public class CrimeListFragment extends android.support.v4.app.Fragment{
     private boolean mSubtitleVisible;
     private static final int CODE=123;
     private static final String KEY_VISIBLETITLE="QWeeqw";
+    private Callback mCallback;
+
+    public  interface Callback {
+        void onCrimeSelected(Crime crime);
+        void onCrimeDeleted(Crime crime);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mCallback =(Callback)context;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallback =null;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -57,14 +73,34 @@ public class CrimeListFragment extends android.support.v4.app.Fragment{
             public void onClick(View v) {
                 Crime crime = new Crime();
                 CrimeLab.get(getActivity()).add(crime);
-                Intent intent = CrimePagerActivity.newIntent(getActivity(), crime.getId());
-                startActivity(intent);
+                mCallback.onCrimeSelected(crime);
+                updateUI();
+                updateView();
             }
         });
         mEptyTextViewl=v.findViewById(R.id.tv_empty);
         mCrimeRecycleView.setLayoutManager(new LinearLayoutManager(getActivity()));
         updateUI();
         updateView();
+        ItemTouchHelper.SimpleCallback simpleCallback=new  ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT){
+
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                mCallback.onCrimeDeleted(CrimeLab.get(getActivity()).getCrimes().get(viewHolder.getAdapterPosition()));
+                CrimeLab.get(getActivity()).delete(CrimeLab.get(getActivity()).getCrimes().get(viewHolder.getAdapterPosition()));
+                updateUI();
+                updateView();
+
+
+            }
+        };
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(mCrimeRecycleView);
         return v;
     }
 
@@ -74,8 +110,9 @@ public class CrimeListFragment extends android.support.v4.app.Fragment{
             case R.id.new_crime: {
                 Crime crime = new Crime();
                 CrimeLab.get(getActivity()).add(crime);
-                Intent intent = CrimePagerActivity.newIntent(getActivity(), crime.getId());
-                startActivity(intent);
+                updateView();
+                updateUI();
+                mCallback.onCrimeSelected(crime);
                 return true;
             }
             case R.id.show_subtitle:{
@@ -145,9 +182,7 @@ public class CrimeListFragment extends android.support.v4.app.Fragment{
         @Override
         public void onClick(View v) {
 
-            Intent intent=CrimePagerActivity.newIntent(getActivity(),mCrime.getId());
-            pos=getAdapterPosition();
-            startActivityForResult(intent,CODE);
+            mCallback.onCrimeSelected(mCrime);
         }
     }
 
@@ -183,7 +218,7 @@ public class CrimeListFragment extends android.support.v4.app.Fragment{
         public void setCrimes(List<Crime> crimes){mCrimes=crimes;}
     }
 
-        private void updateUI(){
+        public void updateUI(){
             CrimeLab crimeLab=CrimeLab.get(getActivity());
             List<Crime> crimes=crimeLab.getCrimes();
             if(mAdapter==null) {

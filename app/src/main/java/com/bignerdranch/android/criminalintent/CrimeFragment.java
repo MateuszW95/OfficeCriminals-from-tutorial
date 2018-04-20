@@ -1,6 +1,7 @@
 package com.bignerdranch.android.criminalintent;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -11,7 +12,6 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ShareCompat;
@@ -37,7 +37,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import java.util.jar.Manifest;
 
 /**
  * Created by mateusz on 08.02.18.
@@ -66,11 +65,32 @@ public class CrimeFragment extends Fragment {
     private Button mSuspectButton;
     private ImageButton mPhotoButton;
     private ImageView mPhotoView;
+    private Callback mCallback;
 
     private boolean ifdeleted=false;
     private static String EXTRA_IFDELETED="99##@!@!@";
     private static String EXTRA_IDCRIME="33@#@!";
 
+    public interface Callback {
+        void onCrimeUpdated(Crime crime);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mCallback =(Callback) context;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallback =null;
+    }
+    private void updateCrime(){
+        CrimeLab.get(getActivity()).updateCrime(mCrime);
+        mCallback.onCrimeUpdated(mCrime);
+
+    }
 
     public  static UUID getDataFromResult(Intent intent){
         if(intent.getBooleanExtra(EXTRA_IFDELETED,false)){
@@ -173,15 +193,8 @@ public class CrimeFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
-                ifdeleted=true;
-
-                    Intent data=new Intent();
-                    data.putExtra(EXTRA_IFDELETED,ifdeleted);
-                    data.putExtra(EXTRA_IDCRIME,mCrime.getId());
-
-                    getActivity().setResult(Activity.RESULT_OK,data);
-
-                getActivity().finish();
+               CrimeLab.get(getContext()).delete(mCrime);
+               onDestroy();
             }
         });
         mTimeButton.setOnClickListener(new View.OnClickListener() {
@@ -212,6 +225,7 @@ public class CrimeFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 mCrime.setSolved(isChecked);
+                updateCrime();
             }
         });
         mTitleField.addTextChangedListener(new TextWatcher() {
@@ -223,6 +237,7 @@ public class CrimeFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                         mCrime.setTitle(s.toString());
+                        updateCrime();
             }
 
             @Override
@@ -279,12 +294,14 @@ public class CrimeFragment extends Fragment {
             Date date =(Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
             mCrime.setDate(date);
             updateDate();
+            updateCrime();
         }
         if(requestCode==REQUEST_CODE_TIME){
             Date date=(Date) data.getSerializableExtra(TimePickerFragment.EXTRA_TIME);
             mCrime.getDate().setHours(date.getHours());
             mCrime.getDate().setMinutes(date.getMinutes());
             updateTime();
+            updateCrime();
         }
         else if(requestCode==REQUEST_CONTACT){
             Uri contactUri=data.getData();
@@ -315,6 +332,7 @@ public class CrimeFragment extends Fragment {
                 mCrime.setSuspectNumber(c.getString(0));
                 mCrime.setSuspect(suspect);
                 mSuspectButton.setText(suspect);
+                updateCrime();
             }
             finally {
                 c.close();
@@ -326,6 +344,7 @@ public class CrimeFragment extends Fragment {
 
             getActivity().revokeUriPermission(uri,Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
             updatePhotoView(mPhotoView);
+            updateCrime();
         }
     }
 

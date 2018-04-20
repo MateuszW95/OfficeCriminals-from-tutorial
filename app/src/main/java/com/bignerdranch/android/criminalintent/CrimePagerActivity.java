@@ -3,7 +3,6 @@ package com.bignerdranch.android.criminalintent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -20,7 +19,7 @@ import java.util.UUID;
  * Created by mateusz on 16.02.18.
  */
 
-public class CrimePagerActivity extends AppCompatActivity {
+public class CrimePagerActivity extends AppCompatActivity implements CrimeFragment.Callback {
     private static final String EXTRA_CRIME_ID="com.bignerdranch.android.cmininalintent.crime_id";
     private ViewPager mViewPager;
     private List<Crime> mCrimes;
@@ -91,5 +90,10 @@ public class CrimePagerActivity extends AppCompatActivity {
         Intent intent=new Intent(packageContext,CrimePagerActivity.class);
         intent.putExtra(EXTRA_CRIME_ID,crimeID);
         return intent;
+    }
+
+    @Override
+    public void onCrimeUpdated(Crime crime) {
+
     }
 }

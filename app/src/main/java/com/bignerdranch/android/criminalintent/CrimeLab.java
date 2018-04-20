@@ -88,7 +88,7 @@ public class CrimeLab {
         ContentValues values= new ContentValues();
         values.put(CrimeDbSchema.CrimeTable.Cols.UUID,crime.getId().toString());
         values.put(CrimeDbSchema.CrimeTable.Cols.TITLE,crime.getTitle().toString());
-        values.put(CrimeDbSchema.CrimeTable.Cols.DATE,crime.getDate().toString());
+        values.put(CrimeDbSchema.CrimeTable.Cols.DATE,crime.getDate().getTime());
         values.put(CrimeDbSchema.CrimeTable.Cols.SOLVED,crime.isSolved()?1:0);
         values.put(CrimeDbSchema.CrimeTable.Cols.SUSPECT,crime.getSuspect());
         values.put(CrimeDbSchema.CrimeTable.Cols.SUSPECT_NUMBER,crime.getSuspectNumber());
@@ -96,7 +96,7 @@ public class CrimeLab {
     }
 
     public void updateCrime(Crime c){
-        String uuidString=c.getId().toString();
+         String uuidString=c.getId().toString();
         ContentValues values=getContentValues(c);
 
         mDatabase.update(CrimeDbSchema.CrimeTable.NAME,values, CrimeDbSchema.CrimeTable.Cols.UUID+" = ?",new String[]{uuidString});
